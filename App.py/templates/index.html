@@ -3,64 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Sentiment Analysis</title>
+    <title>Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            margin-top: 10px;
+            color: #555;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #5cb85c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            display: none;
+            text-align: left;
+        }
+        .result-label {
+            font-weight: bold;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Sentiment Analysis</h1>
+        <form id="sentiment-form">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="City" required>
 
-<h1>Tourism Sentiment Analysis</h1>
+            <label for="place">Place:</label>
+            <input type="text" id="place" name="Place" required>
 
-<!-- Input form for city and place -->
-<label for="city">city:</label>
-<input type="text" id="city" name="city">
-<br><br>
+            <label for="model">Choose Model:</label>
+            <select id="model" name="Model" required>
+                <option value="VADER">VADER</option>
+                <option value="RoBERTa">RoBERTa</option>
+            </select>
 
-<label for="Place">Place:</label>
-<input type="text" id="place" name="place">
-<br><br>
+            <button type="submit">Analyze Sentiment</button>
+        </form>
 
-<button onclick="analyzeSentiment()">Analyze Sentiment</button>
+        <!-- Output container for results -->
+        <div id="result">
+            <p class="result-label">City: <span id="result-city"></span></p>
+            <p class="result-label">Place: <span id="result-place"></span></p>
+            <p class="result-label">Positive: <span id="result-positive"></span></p>
+            <p class="result-label">Neutral: <span id="result-neutral"></span></p>
+            <p class="result-label">Negative: <span id="result-negative"></span></p>
+            <p class="result-label">Compound: <span id="result-compound"></span></p>
+        </div>
+    </div>
 
-<!-- Output section -->
-<h2>Results:</h2>
-<div id="output"></div>
-
-<script>
-    function analyzeSentiment() {
-        // Get values from input fields
+    <script>
+    document.getElementById("sentiment-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
         const city = document.getElementById("city").value;
         const place = document.getElementById("place").value;
+        const model = document.getElementById("model").value;
 
-        // Create JSON payload
-        const data = JSON.stringify({ city: city, place: place });
-
-        // Send POST request to Flask API
-        fetch("http://127.0.0.1:5000/analyze", {
+        const response = await fetch("/get_sentiment", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: data
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Check if there is an error
-            if (data.error) {
-                document.getElementById("output").innerHTML = `Error: ${data.error}`;
-            } else {
-                // Display the results
-                document.getElementById("output").innerHTML = `
-                    <p>City: ${data.city}</p>
-                    <p>Place: ${data.place}</p>
-                    <p>Average Sentiment Score: ${data.average_sentiment_score.toFixed(2)}</p>
-                    <p>Overall Sentiment: ${data.overall_sentiment}</p>
-                    <p>Review Count: ${data.review_count}</p>
-                `;
-            }
-        })
-        .catch(error => {
-            document.getElementById("output").innerHTML = `An error occurred: ${error}`;
+            body: JSON.stringify({ City: city, Place: place, Model: model })
         });
-    }
+
+        const resultData = await response.json();
+
+        if (response.ok) {
+            // Convert scores to percentages
+            const positive = (resultData.Sentiment.Positive * 100).toFixed(2) + "%";
+            const neutral = (resultData.Sentiment.Neutral * 100).toFixed(2) + "%";
+            const negative = (resultData.Sentiment.Negative * 100).toFixed(2) + "%";
+            const compound = (resultData.Sentiment.Compound * 100).toFixed(2) + "%";
+
+            // Populate results in the result container
+            document.getElementById("result-city").textContent = resultData.City;
+            document.getElementById("result-place").textContent = resultData.Place;
+            document.getElementById("result-positive").textContent = positive;
+            document.getElementById("result-neutral").textContent = neutral;
+            document.getElementById("result-negative").textContent = negative;
+            document.getElementById("result-compound").textContent = compound;
+
+            // Show result container
+            document.getElementById("result").style.display = "block";
+        } else {
+            alert(resultData.error || "An error occurred.");
+        }
+    });
 </script>
 
 </body>
