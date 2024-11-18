@@ -3,28 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentiment Analysis</title>
+    <title>Tour Mitra - Sentiment Analysis & Density Information</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f4f9;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 20px;
+        }
+        .header {
+            font-size: 32px;
+            color: #57af57;
+            margin-bottom: 25px;
+            font-size: 40px;
+            margin-left: -342px;
         }
         .container {
+            display: flex;
+            gap: 20px;
+            width: 80%;
+            max-width: 800px;
+        }
+        .card {
             background-color: #fff;
-            padding: 20px 40px;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            text-align: center;
+            width: 100%;
         }
-        h1 {
+        .card h2 {
             font-size: 24px;
             color: #333;
+            margin-top: 0;
         }
         label {
             display: block;
@@ -42,7 +55,7 @@
             box-sizing: border-box;
         }
         button {
-            background-color: #5cb85c;
+            background-color: #57af57;
             color: #fff;
             border: none;
             cursor: pointer;
@@ -51,7 +64,7 @@
         button:hover {
             background-color: #4cae4c;
         }
-        #result {
+        #result, #density-result {
             margin-top: 20px;
             padding: 15px;
             background-color: #e9ecef;
@@ -66,36 +79,66 @@
     </style>
 </head>
 <body>
+    <h1 class="header"><u>Welcome to Tour Mitra</u></h1>
     <div class="container">
-        <h1>Sentiment Analysis</h1>
-        <form id="sentiment-form">
-            <label for="city">City:</label>
-            <input type="text" id="city" name="City" required>
 
-            <label for="place">Place:</label>
-            <input type="text" id="place" name="Place" required>
+        <!-- Sentiment Analysis Card -->
+        <div class="card">
+            <h2>Sentiment Analysis</h2>
+            <form id="sentiment-form">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="City" required>
 
-            <label for="model">Choose Model:</label>
-            <select id="model" name="Model" required>
-                <option value="VADER">VADER</option>
-                <option value="RoBERTa">RoBERTa</option>
-            </select>
+                <label for="place">Place:</label>
+                <input type="text" id="place" name="Place" required>
 
-            <button type="submit">Analyze Sentiment</button>
-        </form>
+                <label for="model">Choose Model:</label>
+                <select id="model" name="Model" required>
+                    <option value="VADER">VADER</option>
+                    <option value="RoBERTa">RoBERTa</option>
+                </select>
 
-        <!-- Output container for results -->
-        <div id="result">
-            <p class="result-label">City: <span id="result-city"></span></p>
-            <p class="result-label">Place: <span id="result-place"></span></p>
-            <p class="result-label">Positive: <span id="result-positive"></span></p>
-            <p class="result-label">Neutral: <span id="result-neutral"></span></p>
-            <p class="result-label">Negative: <span id="result-negative"></span></p>
-            <p class="result-label">Compound: <span id="result-compound"></span></p>
+                <button type="submit">Analyze Sentiment</button>
+            </form>
+
+            <!-- Output container for sentiment results -->
+            <div id="result">
+                <p class="result-label">City: <span id="result-city"></span></p>
+                <p class="result-label">Place: <span id="result-place"></span></p>
+                <p class="result-label">Positive: <span id="result-positive"></span></p>
+                <p class="result-label">Neutral: <span id="result-neutral"></span></p>
+                <p class="result-label">Negative: <span id="result-negative"></span></p>
+                <p class="result-label">Compound: <span id="result-compound"></span></p>
+            </div>
+        </div>
+
+        <!-- Density Information Card -->
+        <div class="card">
+            <h2>Density Info</h2>
+            <form id="density-form">
+                <label for="density-city">City:</label>
+                <input type="text" id="density-city" name="city" required>
+
+                <label for="density-place">Place:</label>
+                <input type="text" id="density-place" name="name" required>
+
+                <button type="submit">Get Density Info</button>
+            </form>
+
+            <!-- Output container for density results -->
+            <div id="density-result">
+                <p class="result-label">Entrance Fee: <span id="density-fee"></span> rs</p>
+                <p class="result-label"> Exploration Time: <span id="density-time"></span> hrs</p>
+                <p class="result-label">DSLR Allowed: <span id="density-dslr"></span></p>
+                <p class="result-label">Google Reviews: <span id="density-reviews"></span></p>
+                <p class="result-label">Best Time to Visit: <span id="density-besttime"></span></p>
+                <p class="result-label">Airport (within 50km): <span id="density-airport"></span></p>
+            </div>
         </div>
     </div>
 
     <script>
+    // Handle sentiment form submission
     document.getElementById("sentiment-form").addEventListener("submit", async function(event) {
         event.preventDefault();
         const city = document.getElementById("city").value;
@@ -113,27 +156,51 @@
         const resultData = await response.json();
 
         if (response.ok) {
-            // Convert scores to percentages
-            const positive = (resultData.Sentiment.Positive * 100).toFixed(2) + "%";
-            const neutral = (resultData.Sentiment.Neutral * 100).toFixed(2) + "%";
-            const negative = (resultData.Sentiment.Negative * 100).toFixed(2) + "%";
-            const compound = (resultData.Sentiment.Compound * 100).toFixed(2) + "%";
-
-            // Populate results in the result container
+            // Update sentiment results
             document.getElementById("result-city").textContent = resultData.City;
             document.getElementById("result-place").textContent = resultData.Place;
-            document.getElementById("result-positive").textContent = positive;
-            document.getElementById("result-neutral").textContent = neutral;
-            document.getElementById("result-negative").textContent = negative;
-            document.getElementById("result-compound").textContent = compound;
+            document.getElementById("result-positive").textContent = resultData.Sentiment.Positive;
+            document.getElementById("result-neutral").textContent = resultData.Sentiment.Neutral;
+            document.getElementById("result-negative").textContent = resultData.Sentiment.Negative;
+            document.getElementById("result-compound").textContent = resultData.Sentiment.Compound;
 
-            // Show result container
             document.getElementById("result").style.display = "block";
         } else {
-            alert(resultData.error || "An error occurred.");
+            alert(resultData.error);
         }
     });
-</script>
 
+    // Handle density info form submission
+    document.getElementById("density-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const city = document.getElementById("density-city").value;
+        const place = document.getElementById("density-place").value;
+
+        const response = await fetch("/get_features", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({ city: city, name: place })
+        });
+
+        const resultData = await response.json();
+
+        if (response.ok) {
+            // Handle potential NaN values gracefully
+            document.getElementById("density-fee").textContent = resultData["Entrance Fee in INR"] || "N/A";
+            document.getElementById("density-time").textContent = resultData["time needed to visit in hrs"] || "N/A";
+            document.getElementById("density-weekly-off").textContent = resultData["Weekly Off"] || "N/A";
+            document.getElementById("density-dslr").textContent = resultData["DSLR Allowed"] || "N/A";
+            document.getElementById("density-airport").textContent = resultData["Airport with 50km Radius"] || "N/A";
+            document.getElementById("density-reviews").textContent = resultData["Google review rating"] || "N/A";
+            document.getElementById("density-besttime").textContent = resultData["Best Time to visit"] || "N/A";
+
+            document.getElementById("density-result").style.display = "block";
+        } else {
+            alert(resultData.error);
+        }
+    });
+    </script>
 </body>
 </html>
