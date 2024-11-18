@@ -4,84 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tour Mitra - Sentiment Analysis & Density Information</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f4f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-        }
-        .header {
-            font-size: 32px;
-            color: #57af57;
-            margin-bottom: 25px;
-            font-size: 40px;
-            margin-left: -342px;
-        }
-        .container {
-            display: flex;
-            gap: 20px;
-            width: 80%;
-            max-width: 800px;
-        }
-        .card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-        }
-        .card h2 {
-            font-size: 24px;
-            color: #333;
-            margin-top: 0;
-        }
-        label {
-            display: block;
-            font-size: 14px;
-            margin-top: 10px;
-            color: #555;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #57af57;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        button:hover {
-            background-color: #4cae4c;
-        }
-        #result, #density-result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            display: none;
-            text-align: left;
-        }
-        .result-label {
-            font-weight: bold;
-            color: #555;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <h1 class="header"><u>Welcome to Tour Mitra</u></h1>
     <div class="container">
-
         <!-- Sentiment Analysis Card -->
         <div class="card">
             <h2>Sentiment Analysis</h2>
@@ -101,7 +28,6 @@
                 <button type="submit">Analyze Sentiment</button>
             </form>
 
-            <!-- Output container for sentiment results -->
             <div id="result">
                 <p class="result-label">City: <span id="result-city"></span></p>
                 <p class="result-label">Place: <span id="result-place"></span></p>
@@ -125,7 +51,6 @@
                 <button type="submit">Get Density Info</button>
             </form>
 
-            <!-- Output container for density results -->
             <div id="density-result">
                 <p class="result-label">Entrance Fee: <span id="density-fee"></span> rs</p>
                 <p class="result-label">Exploration Time: <span id="density-time"></span> hrs</p>
@@ -137,71 +62,72 @@
             </div>
         </div>
     </div>
+    <button class="know-more-btn" onclick="window.location.href='{{ url_for('about') }}'">
+        Know More ↓
+     </button>
 
     <script>
-    // Handle sentiment form submission
-    document.getElementById("sentiment-form").addEventListener("submit", async function(event) {
-        event.preventDefault();
-        const city = document.getElementById("city").value;
-        const place = document.getElementById("place").value;
-        const model = document.getElementById("model").value;
+        // Handle sentiment form submission
+        document.getElementById("sentiment-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const city = document.getElementById("city").value;
+            const place = document.getElementById("place").value;
+            const model = document.getElementById("model").value;
 
-        const response = await fetch("/get_sentiment", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ City: city, Place: place, Model: model })
+            const response = await fetch("/get_sentiment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ City: city, Place: place, Model: model })
+            });
+
+            const resultData = await response.json();
+
+            if (response.ok) {
+                document.getElementById("result-city").textContent = resultData.City;
+                document.getElementById("result-place").textContent = resultData.Place;
+                document.getElementById("result-positive").textContent = resultData.Sentiment.Positive;
+                document.getElementById("result-neutral").textContent = resultData.Sentiment.Neutral;
+                document.getElementById("result-negative").textContent = resultData.Sentiment.Negative;
+                document.getElementById("result-compound").textContent = resultData.Sentiment.Compound;
+
+                document.getElementById("result").style.display = "block";
+            } else {
+                alert(resultData.error);
+            }
         });
 
-        const resultData = await response.json();
+        // Handle density info form submission
+        document.getElementById("density-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const city = document.getElementById("density-city").value;
+            const place = document.getElementById("density-place").value;
 
-        if (response.ok) {
-            // Update sentiment results
-            document.getElementById("result-city").textContent = resultData.City;
-            document.getElementById("result-place").textContent = resultData.Place;
-            document.getElementById("result-positive").textContent = resultData.Sentiment.Positive;
-            document.getElementById("result-neutral").textContent = resultData.Sentiment.Neutral;
-            document.getElementById("result-negative").textContent = resultData.Sentiment.Negative;
-            document.getElementById("result-compound").textContent = resultData.Sentiment.Compound;
+            const response = await fetch("/get_features", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({ city: city, name: place })
+            });
 
-            document.getElementById("result").style.display = "block";
-        } else {
-            alert(resultData.error);
-        }
-    });
+            const resultData = await response.json();
 
-    // Handle density info form submission
-    document.getElementById("density-form").addEventListener("submit", async function(event) {
-        event.preventDefault();
-        const city = document.getElementById("density-city").value;
-        const place = document.getElementById("density-place").value;
+            if (response.ok) {
+                document.getElementById("density-fee").textContent = resultData["Entrance Fee in INR"] || "N/A";
+                document.getElementById("density-time").textContent = resultData["time needed to visit in hrs"] || "N/A";
+                document.getElementById("density-weekly-off").textContent = resultData["Weekly Off"] || "N/A";
+                document.getElementById("density-dslr").textContent = resultData["DSLR Allowed"] || "N/A";
+                document.getElementById("density-airport").textContent = resultData["Airport with 50km Radius"] || "N/A";
+                document.getElementById("density-reviews").textContent = resultData["Google review rating"] || "N/A";
+                document.getElementById("density-besttime").textContent = resultData["Best Time to visit"] || "N/A";
 
-        const response = await fetch("/get_features", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams({ city: city, name: place })
+                document.getElementById("density-result").style.display = "block";
+            } else {
+                alert(resultData.error);
+            }
         });
-
-        const resultData = await response.json();
-
-        if (response.ok) {
-            // Handle potential NaN values gracefully
-            document.getElementById("density-fee").textContent = resultData["Entrance Fee in INR"] || "N/A";
-            document.getElementById("density-time").textContent = resultData["time needed to visit in hrs"] || "N/A";
-            document.getElementById("density-weekly-off").textContent = resultData["Weekly Off"] || "N/A";
-            document.getElementById("density-dslr").textContent = resultData["DSLR Allowed"] || "N/A";
-            document.getElementById("density-airport").textContent = resultData["Airport with 50km Radius"] || "N/A";
-            document.getElementById("density-reviews").textContent = resultData["Google review rating"] || "N/A";
-            document.getElementById("density-besttime").textContent = resultData["Best Time to visit"] || "N/A";
-
-            document.getElementById("density-result").style.display = "block";
-        } else {
-            alert(resultData.error);
-        }
-    });
     </script>
 </body>
 </html>

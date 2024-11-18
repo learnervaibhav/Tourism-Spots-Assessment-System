@@ -11,6 +11,10 @@ density_df = pd.read_csv("C:\\Users\\swati\\Downloads\\GSSOC24\\Tourism-Spots-As
 def home():
     return render_template("index.html")
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/get_features', methods=['POST'])
 @app.route('/get_features', methods=['POST'])
 def get_features():
