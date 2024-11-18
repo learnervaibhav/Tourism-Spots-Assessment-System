@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tour Mitra - Sentiment Analysis & Density Information</title>
+    <title>Tour Mitra - Sentiment Analysis & Tour Place Information</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -145,7 +145,7 @@
 
         <!-- Density Information Card -->
         <div class="card">
-            <h2>Density Info</h2>
+            <h2>Tour Place Info</h2>
             <form id="density-form">
                 <label for="density-city">City:</label>
                 <input type="text" id="density-city" name="city" required>
@@ -173,35 +173,36 @@
 
     <script>
         // Handle sentiment form submission
-        document.getElementById("sentiment-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const city = document.getElementById("city").value;
-            const place = document.getElementById("place").value;
-            const model = document.getElementById("model").value;
+document.getElementById("sentiment-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const city = document.getElementById("city").value;
+    const place = document.getElementById("place").value;
+    const model = document.getElementById("model").value;
 
-            const response = await fetch("/get_sentiment", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ City: city, Place: place, Model: model })
-            });
+    const response = await fetch("/get_sentiment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ City: city, Place: place, Model: model })
+    });
 
-            const resultData = await response.json();
+    const resultData = await response.json();
 
-            if (response.ok) {
-                document.getElementById("result-city").textContent = resultData.City;
-                document.getElementById("result-place").textContent = resultData.Place;
-                document.getElementById("result-positive").textContent = resultData.Sentiment.Positive;
-                document.getElementById("result-neutral").textContent = resultData.Sentiment.Neutral;
-                document.getElementById("result-negative").textContent = resultData.Sentiment.Negative;
-                document.getElementById("result-compound").textContent = resultData.Sentiment.Compound;
+    if (response.ok) {
+        document.getElementById("result-city").textContent = resultData.City;
+        document.getElementById("result-place").textContent = resultData.Place;
+        document.getElementById("result-positive").textContent = (resultData.Sentiment.Positive * 100).toFixed(2) + "%";
+        document.getElementById("result-neutral").textContent = (resultData.Sentiment.Neutral * 100).toFixed(2) + "%";
+        document.getElementById("result-negative").textContent = (resultData.Sentiment.Negative * 100).toFixed(2) + "%";
+        document.getElementById("result-compound").textContent = (resultData.Sentiment.Compound * 100).toFixed(2) + "%";
 
-                document.getElementById("result").style.display = "block";
-            } else {
-                alert(resultData.error);
-            }
-        });
+        document.getElementById("result").style.display = "block";
+    } else {
+        alert(resultData.error);
+    }
+});
+
 
         // Handle density info form submission
         document.getElementById("density-form").addEventListener("submit", async function(event) {

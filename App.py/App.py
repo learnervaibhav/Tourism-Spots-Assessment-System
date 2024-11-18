@@ -4,8 +4,8 @@ import pandas as pd
 app = Flask(__name__)
 
 # Load the combined sentiment scores DataFrame
-sentiment_df = pd.read_csv("C:\\Users\\swati\\Downloads\\GSSOC24\\Tourism-Spots-Assessment-System\\vaderroberta.csv")
-density_df = pd.read_csv("C:\\Users\\swati\\Downloads\\GSSOC24\\Tourism-Spots-Assessment-System\\Density.csv")
+sentiment_df = pd.read_csv("D:\\Sentiment analysis model\\vaderroberta.csv")
+density_df = pd.read_csv("D:\\Sentiment analysis model\\Density.csv")
 
 @app.route('/')
 def home():
