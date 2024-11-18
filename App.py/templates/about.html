@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Tour Mitra</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #E3D29F;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #E3B661;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 25px;
+        }
+        .highlight {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #E3B661;
+            margin: 15px 0;
+        }
+        .tech-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .tech-list li {
+            margin: 10px 0;
+            padding: 5px 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .model-name {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #d5a652;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            margin-top: 20px;
+            transition: transform 0.3s ease;
+        }
+        .back-btn:hover {
+            transform: translateY(-2px);
+            background-color: #dfb05f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TOUR MITRA</h1>
+        
+        <h2>Introduction</h2>
+        <p>Tour Mitra is a comprehensive web-based application designed to enhance the travel experience for tourists by providing two major functionalities: sentiment analysis and Tour place information. The platform aims to assist travelers in making informed decisions by analyzing public sentiment for popular tourist destinations and displaying specific, curated information about places, including hours of operation, entrance fees, and best visit times.</p>
+
+        <h2>Objective</h2>
+        <div class="highlight">
+            <p>The primary objective of Tour Mitra is to offer a reliable, AI-driven tool for evaluating the sentiment associated with various tourist attractions and to give useful, contextual details about these locations. By combining advanced NLP techniques with comprehensive location data, Tour Mitra empowers users to gain a deeper understanding of the places they plan to visit.</p>
+        </div>
+
+        <h2>Development Phase</h2>
+        <p>The sentiment analysis module utilizes two models:</p>
+        <ul>
+            <li><span class="model-name">VADER</span> (Valence Aware Dictionary and sEntiment Reasoner) - Optimal for capturing nuances in shorter text reviews</li>
+            <li><span class="model-name">RoBERTa</span> (Transformer-based model) - Handles more complex language patterns</li>
+        </ul>
+        
+        <p>The Natural Language Toolkit (NLTK) is employed for essential preprocessing tasks such as:</p>
+        <ul class="tech-list">
+            <li>Tokenization</li>
+            <li>Removal of stop words</li>
+            <li>Part-of-speech tagging</li>
+        </ul>
+
+        <h2>Requirements</h2>
+        <div class="highlight">
+            <ul class="tech-list">
+                <li>Languages: Python, HTML, JavaScript</li>
+                <li>Libraries: NLTK, Pandas, Flask, JSON handling libraries</li>
+                <li>Models: VADER and RoBERTa</li>
+                <li>Front-end: Responsive HTML, CSS</li>
+            </ul>
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>Tour Mitra is an AI-enabled platform that bridges the gap between tourists and location-based insights, providing a one-stop solution for sentiment and information analysis of travel destinations. The project sets a foundation for expanding into further personalized travel recommendations.</p>
+
+        <a href="{{ url_for('home') }}" class="back-btn">← Back to Home</a>
+    </div>
+</body>
+</html>
