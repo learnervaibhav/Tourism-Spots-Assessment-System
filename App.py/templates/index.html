@@ -14,7 +14,7 @@
             margin: 0;
             padding: 20px;
         }
- 
+
         .header {
             font-size: 40px;
             color: #21415A;
@@ -22,14 +22,14 @@
             margin-bottom: 25px;
             margin-left: -22vw;
         }
- 
+
         .container {
             display: flex;
             gap: 20px;
             width: 80%;
             max-width: 800px;
         }
- 
+
         .card {
             background-color: #21415acd;
             color: #fff;
@@ -38,21 +38,21 @@
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
         }
- 
+
         .card h2 {
             font-size: 24px;
             color: #f5f4f4;
             margin-top: 0;
         }
- 
+
         label {
             display: block;
             font-size: 14px;
             margin-top: 10px;
             color: #eeeeee;
         }
- 
-        input, select, button {
+
+        input, button {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -62,7 +62,7 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
- 
+
         button {
             background-color: #ce9d42;
             color: #fff;
@@ -70,11 +70,11 @@
             cursor: pointer;
             margin-top: 15px;
         }
- 
+
         button:hover {
             background-color: #b5914f;
         }
- 
+
         #result, #density-result {
             margin-top: 20px;
             padding: 15px;
@@ -83,12 +83,12 @@
             display: none;
             text-align: left;
         }
- 
+
         .result-label {
             font-weight: bold;
             color: #555;
         }
- 
+
         .know-more-btn {
             position: absolute;
             bottom: 20px;
@@ -104,7 +104,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: transform 0.3s ease;
         }
- 
+
         .know-more-btn:hover {
             transform: translateY(-2px);
             background-color: #d5a652;
@@ -124,12 +124,6 @@
                 <label for="place">Place:</label>
                 <input type="text" id="place" name="Place" required>
 
-                <label for="model">Choose Model:</label>
-                <select id="model" name="Model" required>
-                    <option value="VADER">VADER</option>
-                    <option value="RoBERTa">RoBERTa</option>
-                </select>
-
                 <button type="submit">Analyze Sentiment</button>
             </form>
 
@@ -139,7 +133,6 @@
                 <p class="result-label">Positive: <span id="result-positive"></span></p>
                 <p class="result-label">Neutral: <span id="result-neutral"></span></p>
                 <p class="result-label">Negative: <span id="result-negative"></span></p>
-                <p class="result-label">Compound: <span id="result-compound"></span></p>
             </div>
         </div>
 
@@ -148,10 +141,10 @@
             <h2>Tour Place Info</h2>
             <form id="density-form">
                 <label for="density-city">City:</label>
-                <input type="text" id="density-city" name="city" required>
+                <input type="text" id="density-city" Name="city" required>
 
                 <label for="density-place">Place:</label>
-                <input type="text" id="density-place" name="name" required>
+                <input type="text" id="density-place" Name="name" required>
 
                 <button type="submit">Get Density Info</button>
             </form>
@@ -172,71 +165,56 @@
      </button>
 
     <script>
-        // Handle sentiment form submission
-document.getElementById("sentiment-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
-    const city = document.getElementById("city").value;
-    const place = document.getElementById("place").value;
-    const model = document.getElementById("model").value;
+        document.getElementById("sentiment-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const city = document.getElementById("city").value;
+            const place = document.getElementById("place").value;
 
-    const response = await fetch("/get_sentiment", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ City: city, Place: place, Model: model })
-    });
+            const response = await fetch("/get_sentiment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ City: city, Place: place }),
+            });
 
-    const resultData = await response.json();
+            const result = await response.json();
 
-    if (response.ok) {
-        document.getElementById("result-city").textContent = resultData.City;
-        document.getElementById("result-place").textContent = resultData.Place;
-        document.getElementById("result-positive").textContent = (resultData.Sentiment.Positive * 100).toFixed(2) + "%";
-        document.getElementById("result-neutral").textContent = (resultData.Sentiment.Neutral * 100).toFixed(2) + "%";
-        document.getElementById("result-negative").textContent = (resultData.Sentiment.Negative * 100).toFixed(2) + "%";
-        document.getElementById("result-compound").textContent = (resultData.Sentiment.Compound * 100).toFixed(2) + "%";
+            if (response.ok) {
+                document.getElementById("result-city").innerText = result.City;
+                document.getElementById("result-place").innerText = result.Place;
+                document.getElementById("result-positive").innerText = (result.Sentiment.Positive * 100).toFixed(2) + "%";
+                document.getElementById("result-neutral").innerText = (result.Sentiment.Neutral * 100).toFixed(2) + "%";
+                document.getElementById("result-negative").innerText = (result.Sentiment.Negative * 100).toFixed(2) + "%";
+                document.getElementById("result").style.display = "block";
+            } else {
+                alert(result.error);
+            }
+        });
 
-        document.getElementById("result").style.display = "block";
-    } else {
-        alert(resultData.error);
-    }
-});
-
-
-        // Handle density info form submission
-        document.getElementById("density-form").addEventListener("submit", async function(event) {
+        document.getElementById("density-form").addEventListener("submit", async (event) => {
             event.preventDefault();
             const city = document.getElementById("density-city").value;
             const place = document.getElementById("density-place").value;
 
             const response = await fetch("/get_features", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: new URLSearchParams({ city: city, name: place })
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ city, name: place }),
             });
 
-            const resultData = await response.json();
+            const result = await response.json();
 
             if (response.ok) {
-                document.getElementById("density-fee").textContent = resultData["Entrance Fee in INR"] || "N/A";
-                document.getElementById("density-time").textContent = resultData["time needed to visit in hrs"] || "N/A";
-                document.getElementById("density-weekly-off").textContent = resultData["Weekly Off"] || "N/A";
-                document.getElementById("density-dslr").textContent = resultData["DSLR Allowed"] || "N/A";
-                document.getElementById("density-airport").textContent = resultData["Airport with 50km Radius"] || "N/A";
-                document.getElementById("density-reviews").textContent = resultData["Google review rating"] || "N/A";
-                document.getElementById("density-besttime").textContent = resultData["Best Time to visit"] || "N/A";
-
+                document.getElementById("density-fee").innerText = result["Entrance Fee in INR"];
+                document.getElementById("density-time").innerText = result["time needed to visit in hrs"];
+                document.getElementById("density-reviews").innerText = result["Number of Google reviews in lakhs"];
+                document.getElementById("density-dslr").innerText = result["DSLR Allowed"];
+                document.getElementById("density-airport").innerText = result["Airport with 50km Radius"];
+                document.getElementById("density-besttime").innerText = result["Best Time to visit"];
+                document.getElementById("density-weekly-off").innerText = result["Weekly Off"];
                 document.getElementById("density-result").style.display = "block";
             } else {
-                alert(resultData.error);
+                alert(result.error);
             }
-        });
-
-        document.querySelector('.know-more-btn').addEventListener('click', function() {
-            window.location.href = "{{ url_for('about') }}";
         });
     </script>
 </body>
