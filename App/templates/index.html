@@ -141,10 +141,10 @@
             <h2>Tour Place Info</h2>
             <form id="density-form">
                 <label for="density-city">City:</label>
-                <input type="text" id="density-city" Name="city" required>
+                <input type="text" id="density-city" name="city" required>
 
                 <label for="density-place">Place:</label>
-                <input type="text" id="density-place" Name="name" required>
+                <input type="text" id="density-place" name="name" required>
 
                 <button type="submit">Get Density Info</button>
             </form>
@@ -173,7 +173,7 @@
             const response = await fetch("/get_sentiment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ City: city, Place: place }),
+                body: JSON.stringify({ City: city, Place: place })
             });
 
             const result = await response.json();
@@ -204,17 +204,21 @@
             const result = await response.json();
 
             if (response.ok) {
-                document.getElementById("density-fee").innerText = result["Entrance Fee in INR"];
-                document.getElementById("density-time").innerText = result["time needed to visit in hrs"];
-                document.getElementById("density-reviews").innerText = result["Number of Google reviews in lakhs"];
-                document.getElementById("density-dslr").innerText = result["DSLR Allowed"];
-                document.getElementById("density-airport").innerText = result["Airport with 50km Radius"];
-                document.getElementById("density-besttime").innerText = result["Best Time to visit"];
-                document.getElementById("density-weekly-off").innerText = result["Weekly Off"];
+                document.getElementById("density-fee").textContent = result["Entrance Fee in INR"] || "N/A";
+                document.getElementById("density-time").textContent = result["time needed to visit in hrs"] || "N/A";
+                document.getElementById("density-weekly-off").textContent = result["Weekly Off"] || "N/A";
+                document.getElementById("density-dslr").textContent = result["DSLR Allowed"] || "N/A";
+                document.getElementById("density-airport").textContent = result["Airport with 50km Radius"] || "N/A";
+                document.getElementById("density-reviews").textContent = result["Google review rating"] || "N/A";
+                document.getElementById("density-besttime").textContent = result["Best Time to visit"] || "N/A";
+
                 document.getElementById("density-result").style.display = "block";
             } else {
                 alert(result.error);
-            }
+            }          
+        });
+        document.querySelector('.know-more-btn').addEventListener('click', function() {
+            window.location.href = "{{ url_for('about') }}";
         });
     </script>
 </body>

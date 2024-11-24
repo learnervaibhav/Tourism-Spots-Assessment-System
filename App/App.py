@@ -11,8 +11,8 @@ tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-senti
 model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment")
 
 # Load the reviews data
-review_df = pd.read_csv("..\review_db_limited.csv")
-density_df = pd.read_csv("..\Density.csv")
+review_df = pd.read_csv("review_db_limited.csv")
+density_df = pd.read_csv("Density.csv")
 
 # Convert City and Name columns to lowercase for case-insensitive search
 density_df['City'] = density_df['City'].str.lower()
@@ -64,17 +64,17 @@ def get_sentiment():
     else:
         return jsonify({"error": "No reviews found for this city and place"}), 404
 
-
 @app.route('/get_features', methods=['POST'])
 def get_features():
     data = request.form
     city = data.get("city").lower()
     place = data.get("name").lower()
 
-    # Search in density_df
     features = density_df[(density_df['City'] == city) & (density_df['Name'] == place)].to_dict(orient="records")
     if features:
-        return jsonify(features[0])
+        feature_data = features[0]
+        feature_data = {key: (None if pd.isna(value) else value) for key, value in feature_data.items()}
+        return jsonify(feature_data)
     else:
         return jsonify({"error": "No tourist place information found for this city and place"}), 404
 
