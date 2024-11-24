@@ -1,7 +1,7 @@
 # Tourism Spots Assessment System
 
 <img src="https://i.ibb.co/P6M95KP/image.png" align="right"
-     alt="Size Limit logo by Anton Lovchikov" style="transform: rotate(20deg);" width="25%" height="auto">
+     alt="Size Limit logo by Anton Lovchikov" style="transform: rotate(20deg);" width="28%" height="auto">
 
 ## Overview
 The project uses a fine-tuned Roberta model to process sentiment data from reviews. By aggregating sentiment for each city/place, users can see an overview of how a destination is perceived by others, along with specific attributes like visitor ratings, entrance fees, and recommended visit times. 
