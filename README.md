@@ -1,5 +1,4 @@
 # Tourism Spots Assessment System
-<br>
 
 <img src="https://i.ibb.co/P6M95KP/image.png" align="right"
      alt="Size Limit logo by Anton Lovchikov" style="transform: rotate(20deg);" width="25%" height="auto">
