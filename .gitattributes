@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+review_db_limited.csv filter=lfs diff=lfs merge=lfs -text
+vaderroberta.csv filter=lfs diff=lfs merge=lfs -text
+Density.csv filter=lfs diff=lfs merge=lfs -text
