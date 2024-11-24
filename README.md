@@ -9,11 +9,11 @@ The data is processed using Flask to create an interactive web application, wher
  
 
 ## Features
-- <ins>**Sentiment Analysis:**</ins> Sentiment scores for tourist destinations are based on the processing of the Roberta model.
+<ins>**Sentiment Analysis:**</ins> Sentiment scores for tourist destinations are based on the processing of the Roberta model.
 
-- <ins>**City and Place Data Retrieval:**</ins> Query tourist destinations by city and place names for relevant details like entrance fees, reviews, ratings, etc.
+<ins>**City and Place Data Retrieval:**</ins> Query tourist destinations by city and place names for relevant details like entrance fees, reviews, ratings, etc.
 
-- <ins>**Web Interface:**</ins> A user-friendly web interface that interacts with the sentiment analysis results.
+<ins>**Web Interface:**</ins> A user-friendly web interface that interacts with the sentiment analysis results.
 
 <br>
 
