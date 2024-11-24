@@ -11,8 +11,8 @@ tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-senti
 model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment")
 
 # Load the reviews data
-review_df = pd.read_csv("D:\\Sentiment analysis model\\review_db_limited.csv")
-density_df = pd.read_csv("D:\\Sentiment analysis model\\Density.csv")
+review_df = pd.read_csv("..\review_db_limited.csv")
+density_df = pd.read_csv("..\Density.csv")
 
 # Convert City and Name columns to lowercase for case-insensitive search
 density_df['City'] = density_df['City'].str.lower()
